@@ -72,7 +72,7 @@
 	$.ajax(settings).done(function (response) {
 	  response.forEach(function(o){
 		var myIcon = L.icon({
-		iconUrl: 'boat.png',
+		iconUrl: 'aim.png',
 		iconSize: [40, 45], // size of the icon
 		});
 		L.marker([parseFloat(o.data.target_lat), parseFloat(o.data.target_long)], {icon: myIcon}).addTo(mymap);
