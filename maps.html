@@ -11,7 +11,10 @@
 	<link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico" />
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-label@0.2.1-0/dist/leaflet.label.css">
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet-label@0.2.1-0/dist/leaflet.label.js"></script>
+    
 
 	
 </head>
@@ -71,10 +74,17 @@
 
 	$.ajax(settings).done(function (response) {
 	  response.forEach(function(o){
-		var myIcon = L.icon({
-		iconUrl: 'aim.png',
-		iconSize: [40, 40], // size of the icon
-		});
+		// var myIcon = L.icon({
+		// iconUrl: 'aim.png',
+		// iconSize: [40, 40], // size of the icon
+		// title: o.data.name,
+		// });
+
+		var myIcon = new L.DivIcon({
+        className: 'my-div-icon',
+        html: '<span class="my-div-span">'+o.data.name+'</span><img style="width:40px;height:40px;" class="my-div-image" src="aim.png"/>'
+   		})
+
 		L.marker([parseFloat(o.data.target_lat), parseFloat(o.data.target_long)], {icon: myIcon}).addTo(mymap);
 	  });
 	});
@@ -110,7 +120,8 @@
 		iconUrl: 'boat.png',
 		iconSize: [40, 40], // size of the icon
 		});
-		L.marker([o[0], o[1]], {icon: myIcon}).addTo(mymap);
+		var marker = L.marker([o[0], o[1]], {icon: myIcon});
+		marker.addTo(mymap);
 	})
 
 </script>
