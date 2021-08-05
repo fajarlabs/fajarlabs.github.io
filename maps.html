@@ -13,17 +13,21 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
 
-
 	
 </head>
 <body>
 
 
 
-<div id="mapid" style="width: 600px; height: 400px;"></div>
+<div id="mapid" style="width: 100%; height: 1000px;"></div>
+<script
+			  src="https://code.jquery.com/jquery-3.6.0.min.js"
+			  integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+			  crossorigin="anonymous"></script>
 <script>
 
-	var mymap = L.map('mapid').setView([51.505, -0.09], 13);
+	var mymap = L.map('mapid').setView([0, 0], 13);
+	mymap.panTo(new L.LatLng(-6.115778, 106.791067));
 
 	L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
 		maxZoom: 18,
@@ -35,6 +39,12 @@
 	}).addTo(mymap);
 
 	L.marker([51.5, -0.09]).addTo(mymap);
+
+	// var myIcon = L.icon({
+	// iconUrl: 'boat.png',
+	// iconSize: [40, 45], // size of the icon
+	// });
+	// L.marker([-6.115778, 106.791067], {icon: myIcon}).addTo(mymap);
 
 	L.circle([51.508, -0.11], {
 		color: 'red',
@@ -49,6 +59,56 @@
 		[51.51, -0.047]
 	]).addTo(mymap);
 
+
+	var settings = {
+	  "url": "http://128.199.80.196:4044/api/radar",
+	  "method": "GET",
+	  "timeout": 0,
+	  "headers": {
+	    "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNmIyZTY0NDRhNDRhMzhhZGQwNzllNjQ0Zjg5MDEyMDc0MDM1NzRlZjRlNDA3YjIxYjYxYjQ5YmI3ODZkNjU4ZTBkY2M1MzBhZTZjYjljOWQiLCJpYXQiOjE2MjgwNTM3NjIuNTM4MjA2LCJuYmYiOjE2MjgwNTM3NjIuNTM4MjE0LCJleHAiOjQ3ODM3MjczNjIuMTk2NjE5LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.vmatTFg7mfD-JDDVEfh0U-nl1GSk-9ZhOaLZGKDnPT2670KE4tQSv8NtSGjF_cMgAsg2wqRlMpbTjTbisYlAm1a5SDE_5u1FWpk5U-YVNnkfHSEWF0GjPiJyfiZBucrd_9mvuvSj6xb5eff61Cy_7_2G-UlzLjK_qw4WFakjfw0DNzS6svr7cGctrD9etcWy9GCodKxOZQmzZM0ktpZ9qHKobvTEPnUzyJrD4OLrimhrqKJj7FjuDFHKXHSNGQ8I6Z5NBmpomOeNIlsEKXT7B_GfONa6nVsCR8PvJDUHI64IrjmjbvAiZGEaoexOy7pdLM2NGbN_sYJNChzP_YfU0ZuAQgNJn7FxTAUFdrSTsWfRvXp_AX0sTqtw2EP9phx4rj4xCmtHh_4-QaKqznK5c0_pPCcw7sx8ToYy70pv7WVeQlruZAsC9OrGGw5ichzYBfpu4vgj-nIrZZfxaf_EBQI-krr6xEnXrz-DfujmeQu6vtoU-BL4C5WwykbSTmuZfzQD9G0M1byshGiYmG_q39qwtI9sJPt00j4e82X8OMWXuFHcHp2X3hdwRd2Dq0Y3nqHzskThtFuOzEpRf1jpqScaWmED6wa0F0zKnXkSw_pa3LjNtKetzrKiROWG4awnqsuQlk0OKRgMc07z-se56MIR5zlOnCdxdbIvrJVQ7F4"
+	  },
+	};
+
+	$.ajax(settings).done(function (response) {
+	  response.forEach(function(o){
+		var myIcon = L.icon({
+		iconUrl: 'boat.png',
+		iconSize: [40, 45], // size of the icon
+		});
+		L.marker([parseFloat(o.data.target_lat), parseFloat(o.data.target_long)], {icon: myIcon}).addTo(mymap);
+	  });
+	});
+
+	var settings = {
+	  "url": "http://128.199.80.196:4044/api/ais",
+	  "method": "GET",
+	  "timeout": 0,
+	  "headers": {
+	    "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNmIyZTY0NDRhNDRhMzhhZGQwNzllNjQ0Zjg5MDEyMDc0MDM1NzRlZjRlNDA3YjIxYjYxYjQ5YmI3ODZkNjU4ZTBkY2M1MzBhZTZjYjljOWQiLCJpYXQiOjE2MjgwNTM3NjIuNTM4MjA2LCJuYmYiOjE2MjgwNTM3NjIuNTM4MjE0LCJleHAiOjQ3ODM3MjczNjIuMTk2NjE5LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.vmatTFg7mfD-JDDVEfh0U-nl1GSk-9ZhOaLZGKDnPT2670KE4tQSv8NtSGjF_cMgAsg2wqRlMpbTjTbisYlAm1a5SDE_5u1FWpk5U-YVNnkfHSEWF0GjPiJyfiZBucrd_9mvuvSj6xb5eff61Cy_7_2G-UlzLjK_qw4WFakjfw0DNzS6svr7cGctrD9etcWy9GCodKxOZQmzZM0ktpZ9qHKobvTEPnUzyJrD4OLrimhrqKJj7FjuDFHKXHSNGQ8I6Z5NBmpomOeNIlsEKXT7B_GfONa6nVsCR8PvJDUHI64IrjmjbvAiZGEaoexOy7pdLM2NGbN_sYJNChzP_YfU0ZuAQgNJn7FxTAUFdrSTsWfRvXp_AX0sTqtw2EP9phx4rj4xCmtHh_4-QaKqznK5c0_pPCcw7sx8ToYy70pv7WVeQlruZAsC9OrGGw5ichzYBfpu4vgj-nIrZZfxaf_EBQI-krr6xEnXrz-DfujmeQu6vtoU-BL4C5WwykbSTmuZfzQD9G0M1byshGiYmG_q39qwtI9sJPt00j4e82X8OMWXuFHcHp2X3hdwRd2Dq0Y3nqHzskThtFuOzEpRf1jpqScaWmED6wa0F0zKnXkSw_pa3LjNtKetzrKiROWG4awnqsuQlk0OKRgMc07z-se56MIR5zlOnCdxdbIvrJVQ7F4"
+	  },
+	};
+
+	$.ajax(settings).done(function (response) {
+	  response.forEach(function(o){
+		var settings = {
+		  "url": "http://ais.tbsalling.dk/decode",
+		  "method": "POST",
+		  "timeout": 0,
+		  "headers": {
+		    "Content-Type": "application/json",
+		    "Accept": "application/json",
+		    "crossDomain" :true,
+		  },
+		  "data": JSON.stringify({
+		    "nmea": o.nmea
+		  }),
+		};
+
+		$.ajax(settings).done(function (response) {
+		  console.log(response);
+		});
+	  });
+	});
 
 </script>
 
